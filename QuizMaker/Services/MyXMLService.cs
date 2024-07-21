@@ -13,12 +13,10 @@ namespace QuizMaker.Services
     internal class MyXMLService
     {
         public readonly string _xmlPath;
-        private XmlDocument activeDoc;
 
         public MyXMLService(string xmlPath)
         {
             _xmlPath = xmlPath;
-            activeDoc = ReadXML();
         }
 
         public void CreateXML()
@@ -30,67 +28,65 @@ namespace QuizMaker.Services
                     Indent = true
                 };
 
-                using (XmlWriter xmlWriter = XmlWriter.Create(_xmlPath, xmlWriterSettings))
-                {
-                    xmlWriter.WriteStartDocument();
-                    xmlWriter.WriteStartElement("Data");
-                    xmlWriter.WriteEndElement();
-                    xmlWriter.WriteEndDocument();
-                }
+                //ListOfQuizItem list = new ListOfQuizItem();
+                //list.QuizItems.Add(new QuizItem("How many days in a week?", "seven"));
+                //SaveListOfQuizItemsToFile(_xmlPath, list);
+                SaveListOfQuizItemsToFile(_xmlPath, new ListOfQuizItem());
+
+
             }
         }
 
         public void AddQuizItemToXml(QuizItem quizItemModel)
         {
             CreateXML();
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(QuizItem));
-
-            using (StringWriter stringWriter = new StringWriter())
-            {
-                // Serialize the model into the StringWriter
-                xmlSerializer.Serialize(stringWriter, quizItemModel);
-
-                // Load the serialized model string into an XmlDocument
-                XmlDocument serializedDoc = new XmlDocument();
-                serializedDoc.LoadXml(stringWriter.ToString());
-
-                // Import the serialized document's root element into the target document
-                XmlNode importedNode = activeDoc.ImportNode(serializedDoc.DocumentElement, true);
-
-                // Append the imported node directly to the document's root element or another specific node
-                activeDoc.DocumentElement.AppendChild(importedNode);
-
-                // Save the active document
-                activeDoc.Save(_xmlPath);
-            }
+            var list = ReadListOfQuizItemsFromFile();
+            list.QuizItems.Add(quizItemModel);
+            SaveListOfQuizItemsToFile(_xmlPath, list);
         }
 
-        public List<QuizItem> GetQuizItems()
-        {
-            CreateXML(); // if doesntl exist
-            ListOfQuizItem list;
-            XmlRootAttribute xmlRootAttribute = new XmlRootAttribute("Data");
-            XmlSerializer serializer = new XmlSerializer(typeof(ListOfQuizItem), xmlRootAttribute);
-
-            FileStream fs = new FileStream(_xmlPath, FileMode.Open);
-
-            QuizItem quizItem;
-
-            list = (ListOfQuizItem) serializer.Deserialize(fs);
-
-            return list.QuizItems.ToList();
-        }
-        public XmlDocument? ReadXML()
+        public ListOfQuizItem ReadListOfQuizItemsFromFile()
         {
             CreateXML();
-            XmlDocument xmlDoc = new XmlDocument();
-
-            using (FileStream fileStream = new FileStream(_xmlPath, FileMode.Open, FileAccess.Read))
+            try
             {
-                xmlDoc.Load(fileStream);
-            }
-            return xmlDoc;
-        }
+                XmlRootAttribute xmlRootAttribute = new XmlRootAttribute("Data");
+                XmlSerializer serializer = new XmlSerializer(typeof(ListOfQuizItem), xmlRootAttribute);
 
+                using (FileStream fileStream = new FileStream(_xmlPath, FileMode.Open))
+                {
+                    return (ListOfQuizItem)serializer.Deserialize(fileStream);
+                }
+            }
+            catch (FileNotFoundException)
+            {
+                Console.WriteLine($"File '{_xmlPath}' not found. Creating a new one.");
+                throw;// return new ListOfQuizItem();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error reading XML file: {ex.Message}");
+                throw;//return new ListOfQuizItem();
+            }
+        }
+        
+        private void SaveListOfQuizItemsToFile(string filePath, ListOfQuizItem listOfQuizItem)
+        {
+            try
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(ListOfQuizItem));
+
+                using (FileStream fileStream = new FileStream(filePath, FileMode.OpenOrCreate))
+                {
+                    serializer.Serialize(fileStream, listOfQuizItem);
+                }
+
+                Console.WriteLine($"Quiz item added and saved to {filePath} successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error saving to XML file: {ex.Message}");
+            }
+        }
     }
 }

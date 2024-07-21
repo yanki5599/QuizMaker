@@ -7,11 +7,13 @@ using System.Xml.Serialization;
 
 namespace QuizMaker.Model
 {
+
     public class QuizItem
     {
-        [XmlElement]
-        public string Question {  get; set; }
-        [XmlElement]
+        [XmlElement("Question")]
+        public string Question { get; set; }
+
+        [XmlElement("Answer")]
         public string Answer { get; set; }
 
         public QuizItem(string q, string ans)

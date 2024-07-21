@@ -10,17 +10,18 @@ namespace QuizMaker.Model
     [XmlRoot("Data")]
     public class ListOfQuizItem
     {
-        [XmlArrayAttribute("Data")]
-        public QuizItem[] QuizItems { get; set; }
+        [XmlArray("QuizItems")]
+        [XmlArrayItem("QuizItem")]
+        public List<QuizItem> QuizItems { get; set; }
 
-        public ListOfQuizItem(QuizItem[] QuizItems)
-        {
-            this.QuizItems = new QuizItem[QuizItems.Length];
-            QuizItems.CopyTo(this.QuizItems,0);
-        }
         public ListOfQuizItem()
         {
-            
+            QuizItems = new List<QuizItem>();
+        }
+
+        public ListOfQuizItem(List<QuizItem> quizItems)
+        {
+            QuizItems = quizItems;
         }
     }
 }
