@@ -18,8 +18,19 @@ namespace QuizMaker
             while (true) 
             {
                 var questionsAndAnswers = GetListOfQuizItems();
+                if (questionsAndAnswers.Count == 0)
+                {
+                    Console.WriteLine("no questions. please add some.");
+                    return;
+                }
+
                 PrintListOfQuestions(questionsAndAnswers);
-                string  choice = Utils.ReadFromUser("Enter a question number: ");
+
+                string?  choice = Utils.ReadFromUser("Enter a question number: ",true);
+                if (choice == null)
+                {
+                    return;
+                }
                 RunQuestion(choice, questionsAndAnswers);
             }
         }
@@ -31,11 +42,11 @@ namespace QuizMaker
 
         private void RunQuestion(string choice, List<QuizItem> questionsAndAnswers)
         {
-            if (int.TryParse(choice, out int choiceNum) && questionsAndAnswers.Count >= choiceNum)
+            if (int.TryParse(choice, out int choiceNum) && questionsAndAnswers.Count >= choiceNum && choiceNum > 0)
             {
                 Console.WriteLine(questionsAndAnswers[choiceNum -1].Question);
 
-                string userAns = Utils.ReadFromUser("what is your answer?: ");
+                string userAns = Utils.ReadFromUser("your answer: ");
 
                 if (userAns.Trim().Equals(questionsAndAnswers[choiceNum -1].Answer))
                     Console.WriteLine("correct! well done!! ");

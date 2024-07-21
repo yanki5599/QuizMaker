@@ -17,24 +17,15 @@ namespace QuizMaker
             while (true)
             {
                 Console.WriteLine("=======================");
-                string q = ReadFromUser("Write a question: ");
+                string q = Utils.ReadFromUser("Write a question: ");
                 //maybe check if question already exist.
-                string ans = ReadFromUser("Write the answer: ");
-
+                string ans = Utils.ReadFromUser("Write the answer: ");
+               
                 SaveToXml(q, ans);
             }
         }
 
-        public static string ReadFromUser(string msg)
-        {
-            string? input = null;
-            do
-            {
-                Console.WriteLine(msg);
-                input = Console.ReadLine();
-            }while(input == null);
-            return input;
-        }
+       
 
         private void SaveToXml(string q, string ans)
         {
