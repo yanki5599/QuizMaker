@@ -13,6 +13,14 @@ namespace QuizMaker.Model
         [XmlArrayAttribute("Data")]
         public QuizItem[] QuizItems { get; set; }
 
-        
+        public ListOfQuizItem(QuizItem[] QuizItems)
+        {
+            this.QuizItems = new QuizItem[QuizItems.Length];
+            QuizItems.CopyTo(this.QuizItems,0);
+        }
+        public ListOfQuizItem()
+        {
+            
+        }
     }
 }

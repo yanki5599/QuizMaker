@@ -69,8 +69,8 @@ namespace QuizMaker.Services
         {
             CreateXML(); // if doesntl exist
             ListOfQuizItem list;
-
-            XmlSerializer serializer = new XmlSerializer(typeof(ListOfQuizItem));
+            XmlRootAttribute xmlRootAttribute = new XmlRootAttribute("Data");
+            XmlSerializer serializer = new XmlSerializer(typeof(ListOfQuizItem), xmlRootAttribute);
 
             FileStream fs = new FileStream(_xmlPath, FileMode.Open);
 
@@ -78,7 +78,7 @@ namespace QuizMaker.Services
 
             list = (ListOfQuizItem) serializer.Deserialize(fs);
 
-            return ListOfQuizItem.;
+            return list.QuizItems.ToList();
         }
         public XmlDocument? ReadXML()
         {
