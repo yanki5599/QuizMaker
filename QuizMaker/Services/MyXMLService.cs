@@ -36,13 +36,14 @@ namespace QuizMaker.Services
             SaveListOfQuizItemsToFile(_xmlPath, list);
         }
 
+       
         public ListOfQuizItem ReadListOfQuizItemsFromFile()
         {
             CreateXML();
             try
             {
-                XmlRootAttribute xmlRootAttribute = new XmlRootAttribute("Data");
-                XmlSerializer serializer = new XmlSerializer(typeof(ListOfQuizItem), xmlRootAttribute);
+               /* XmlRootAttribute xmlRootAttribute = new XmlRootAttribute("Data");*/
+                XmlSerializer serializer = new XmlSerializer(typeof(ListOfQuizItem)/*, xmlRootAttribute*/);
 
                 using (FileStream fileStream = new FileStream(_xmlPath, FileMode.Open))
                 {

@@ -23,6 +23,11 @@ namespace QuizMaker.Model
         }
 
         public QuizItem() { }
-        
+
+        public override string ToString()
+        {
+            return $"question: {Question}\nanswer: {Answer}";
+        }
+
     }
 }
