@@ -23,17 +23,8 @@ namespace QuizMaker.Services
         {
             if (!File.Exists(_xmlPath))
             {
-                XmlWriterSettings xmlWriterSettings = new XmlWriterSettings
-                {
-                    Indent = true
-                };
-
-                //ListOfQuizItem list = new ListOfQuizItem();
-                //list.QuizItems.Add(new QuizItem("How many days in a week?", "seven"));
-                //SaveListOfQuizItemsToFile(_xmlPath, list);
+                XmlWriterSettings xmlWriterSettings = new XmlWriterSettings {Indent = true};
                 SaveListOfQuizItemsToFile(_xmlPath, new ListOfQuizItem());
-
-
             }
         }
 
@@ -55,18 +46,18 @@ namespace QuizMaker.Services
 
                 using (FileStream fileStream = new FileStream(_xmlPath, FileMode.Open))
                 {
-                    return (ListOfQuizItem)serializer.Deserialize(fileStream);
+                    return (ListOfQuizItem)serializer.Deserialize(fileStream)!;
                 }
             }
             catch (FileNotFoundException)
             {
                 Console.WriteLine($"File '{_xmlPath}' not found. Creating a new one.");
-                throw;// return new ListOfQuizItem();
+                throw;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error reading XML file: {ex.Message}");
-                throw;//return new ListOfQuizItem();
+                throw;
             }
         }
         
